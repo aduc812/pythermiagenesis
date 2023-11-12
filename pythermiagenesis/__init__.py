@@ -15,7 +15,6 @@ import logging
 
 from .const import *
 from struct import unpack
-from pyModbusTCP.utils import *
 
 from  pythermiagenesis.client  import ThermiaModbusClient
 
@@ -199,7 +198,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                         val = read_data[address]
                         if(datatype == TYPE_LONG):
                             regs = read_data[address:(address+2)]
-                            val = word_list_to_long(regs)[0]
+                            val = self._client.word_list_to_long(regs)[0]
                         elif(datatype == TYPE_INT):
                             if(val == 32767): val = 0
                             if(val > 32767): val = val - 65536

@@ -44,7 +44,10 @@ class ThermiaModbusTCPLiteClient():
             _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s",  self._host, self._port)
             if not self._client.open():
                 raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
- 
+    def word_list_to_long(regs):
+        from pyModbusTCP.utils import word_list_to_long as pyModbusTCP_word_list_to_long
+        return pyModbusTCP_word_list_to_long(regs)
+
     # all other arributes we return from _client as is
     def __getattr__(self,value):
         print (f"calling {type(self._client)}.{value}") 
@@ -151,6 +154,13 @@ class ThermiaModbusRTUClient():
 
     def last_error():
         return self._last_error
+
+    def word_list_to_long(regs):
+        output = []
+        for i in range (len(regs)/2):
+            val=self._client.convert_from_registers(regs[i*2],self._client.DATATYPE.INT32)
+            output.append(val)
+        return output
 
     # all other arributes we return from _client as is
     def __getattr__(self,value):
