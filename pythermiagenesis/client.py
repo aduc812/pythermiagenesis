@@ -44,12 +44,12 @@ class ThermiaModbusTCPLiteClient():
             _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s",  self._host, self._port)
             if not self._client.open():
                 raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
-    def word_list_to_long(regs):
+    def word_list_to_long(self, regs):
         from pyModbusTCP.utils import word_list_to_long as pyModbusTCP_word_list_to_long
         return pyModbusTCP_word_list_to_long(regs)
 
     # all other arributes we return from _client as is
-    def __getattr__(self,value):
+    def __getattr__(self, value):
         print (f"calling {type(self._client)}.{value}") 
         return getattr(self._client, value)
 
@@ -107,7 +107,7 @@ class ThermiaModbusRTUClient():
         raise ModbusException("ERROR: pymodbus returned an error!")
         return rr
 
-    async def read_coils(start_address, length):
+    async def read_coils(self, start_address, length):
         try:
             rr = await self._client.read_coils(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -118,7 +118,7 @@ class ThermiaModbusRTUClient():
         raise ModbusException("ERROR: pymodbus returned an error!")
         return rr.bits
 
-    async def read_discrete_inputs(start_address, length):
+    async def read_discrete_inputs(self, start_address, length):
         try:
             rr =  await self._client.read_discrete_inputs(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -129,7 +129,7 @@ class ThermiaModbusRTUClient():
         raise ModbusException("ERROR: pymodbus returned an error!")
         return rr.bits
 
-    async def read_input_registers(start_address, length):
+    async def read_input_registers(self, start_address, length):
         try:
             rr =  await self._client.read_input_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -140,7 +140,7 @@ class ThermiaModbusRTUClient():
         raise ModbusException("ERROR: pymodbus returned an error!")
         return rr.registers
 
-    async def read_holding_registers(start_address, length):
+    async def read_holding_registers(self, start_address, length):
         try:
             rr =  await self._client.read_holding_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -151,10 +151,10 @@ class ThermiaModbusRTUClient():
         raise ModbusException("ERROR: pymodbus returned an error!")
         return rr.registers
 
-    def last_error():
+    def last_error(self):
         return self._last_error
 
-    def word_list_to_long(regs):
+    def word_list_to_long(self, regs):
         output = []
         for i in range (len(regs)/2):
             val=self._client.convert_from_registers(regs[i*2],self._client.DATATYPE.INT32)
@@ -162,7 +162,7 @@ class ThermiaModbusRTUClient():
         return output
 
     # all other arributes we return from _client as is
-    def __getattr__(self,value):
+    def __getattr__(self, value):
         print (f"calling {type(self._client)}.{value}") 
         return getattr(self._client, value)
     
