@@ -56,7 +56,7 @@ class ThermiaModbusTCPLiteClient():
 class ThermiaModbusRTUClient():
     """instance of pyModbus RTU client"""
 
-    def __init__(self, port, host=1, baudrate=19200, bytesize=8, 
+    def __init__(self, host=1, port = "/dev/serial0",  baudrate=19200, bytesize=8, 
                 parity="E", stopbits=1, handle_local_echo=False):
 
         import pymodbus.client as ModbusClientRTU
