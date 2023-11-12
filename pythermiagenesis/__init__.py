@@ -15,6 +15,7 @@ import logging
 
 from .const import *
 from struct import unpack
+from pyModbusTCP.utils import *
 
 from  pythermiagenesis.client  import ThermiaModbusClient
 

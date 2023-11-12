@@ -34,7 +34,6 @@ class ThermiaModbusTCPLiteClient():
     """instance of pyModbusTCP.client"""
     def __init__ (self, host, port=502, unit_id=1, auto_open=True):
         from pyModbusTCP.client import ModbusClient as pyModbusTCPClient
-        from pyModbusTCP.utils import *
         self._host = host
         self._port = port
         self._client = pyModbusTCPClient(host, port=port, unit_id=unit_id, auto_open=auto_open)
