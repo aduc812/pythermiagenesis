@@ -64,7 +64,7 @@ class ThermiaModbusRTUClient():
         from pymodbus.exceptions import ModbusException
         self._port = port # serial port device, e.g. "/dev/serial0"
         self._host = host # slave address in Modbus RTU calls
-        self._client = ModbusClientRTU.ModbusAsyncSerialClient(
+        self._client = ModbusClientRTU.AsyncModbusSerialClient(
                 port, 
                 framer=rtuframer,
                 #timeout=10,
