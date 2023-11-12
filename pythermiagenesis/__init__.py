@@ -111,13 +111,13 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         try:
             if(regtype == REG_COIL):
                 _LOGGER.debug(f"Set {regtype} register at {address} value {value} ({value})")
-                self._client.write_single_coil(address, value)
+                await self._client.write_single_coil(address, value)
             elif(regtype == REG_HOLDING):
                 converted_value = int(value * scale)
                 if(meta[KEY_DATATYPE] == TYPE_INT):
                     converted_value = num_to_bin(converted_value)
                 _LOGGER.debug(f"Set {regtype} register at {address} value {converted_value} ({value}) {scale}")
-                self._client.write_single_register(address, converted_value)
+                await self._client.write_single_register(address, converted_value)
             else: 
                 raise "This register can not be changed"
         except Exception as e:
@@ -183,13 +183,13 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                 _LOGGER.debug(f"Reading {regtype} {start_address} length {length}")
                 read_data = None
                 if(regtype == REG_COIL):
-                    read_data = self._client.read_coils(start_address, length)
+                    read_data = await self._client.read_coils(start_address, length)
                 elif(regtype == REG_DISCRETE_INPUT):
-                    read_data = self._client.read_discrete_inputs(start_address, length)
+                    read_data = await self._client.read_discrete_inputs(start_address, length)
                 elif(regtype == REG_INPUT):
-                    read_data = self._client.read_input_registers(start_address, length)
+                    read_data = await self._client.read_input_registers(start_address, length)
                 elif(regtype == REG_HOLDING):
-                    read_data = self._client.read_holding_registers(start_address, length)
+                    read_data = await self._client.read_holding_registers(start_address, length)
                 if read_data:
                     for i, (name, address) in enumerate(chunk['slots'].items()):
                         info = REGISTERS[name]
