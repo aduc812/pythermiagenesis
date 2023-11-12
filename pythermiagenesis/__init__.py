@@ -34,7 +34,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         """Initialize."""
 
         self.data = {}
-        self._client = ThermiaModbusClient(host, protocol = protocol, port=port, kind=kind, delay=delay, max_registers=max_registers,
+        self._client = ThermiaModbusClient(host, protocol = protocol, port=port,
                 baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits, handle_local_echo=handle_local_echo)
         self.firmware = None
         if(kind == MODEL_MEGA): self.model = "Mega"
