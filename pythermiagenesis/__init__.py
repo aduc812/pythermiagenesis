@@ -49,7 +49,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
     async def async_set(self, register, value):  # pylint:disable=too-many-branches
         """Write data to heat pump."""
         ret_value = await self._set_data(register, value)
-        self._client.close()
+        await self._client.close()
 
     async def async_update(self, register_types=REG_TYPES, only_registers = None):  # pylint:disable=too-many-branches
         """Update data from heat pump."""
@@ -62,7 +62,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
             use_registers = dict(filter(lambda x: x[1][self._kind], REGISTERS.items())).keys()
 
         raw_data = await self._get_data(use_registers)
-        self._client.close()
+        await  self._client.close()
 
         if not raw_data:
             self.data = {}

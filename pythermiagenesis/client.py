@@ -85,7 +85,7 @@ class ThermiaModbusRTUClient():
             raise ThermiaConnectionError(f"Failed to open port {self._port}")
 
     async def write_single_coil(self, address, value):
-
+        from pymodbus.exceptions import ModbusException
         try:
             rr = await client.read_coils(address, value, slave = self._host)
         except ModbusException as exc:
@@ -97,6 +97,7 @@ class ThermiaModbusRTUClient():
         return rr
 
     async def write_single_register(self, address, value):
+        from pymodbus.exceptions import ModbusException
         try:
             rr = await self._client.write_register(address, value,  slave = self._host)
         except ModbusException as exc:
@@ -108,6 +109,7 @@ class ThermiaModbusRTUClient():
         return rr
 
     async def read_coils(self, start_address, length):
+        from pymodbus.exceptions import ModbusException
         try:
             rr = await self._client.read_coils(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -119,6 +121,7 @@ class ThermiaModbusRTUClient():
         return rr.bits
 
     async def read_discrete_inputs(self, start_address, length):
+        from pymodbus.exceptions import ModbusException
         try:
             rr =  await self._client.read_discrete_inputs(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -130,6 +133,7 @@ class ThermiaModbusRTUClient():
         return rr.bits
 
     async def read_input_registers(self, start_address, length):
+        from pymodbus.exceptions import ModbusException
         try:
             rr =  await self._client.read_input_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
@@ -141,6 +145,7 @@ class ThermiaModbusRTUClient():
         return rr.registers
 
     async def read_holding_registers(self, start_address, length):
+        from pymodbus.exceptions import ModbusException
         try:
             rr =  await self._client.read_holding_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
