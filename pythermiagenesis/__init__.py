@@ -13,26 +13,14 @@ from datetime import timedelta
 from operator import itemgetter, attrgetter
 import logging
 
-from pyModbusTCP.client import ModbusClient
-from pyModbusTCP.utils import *
-
 from .const import *
 from struct import unpack
 
+from client import ThermiaModbusClient
+
+
 _LOGGER = logging.getLogger(__name__)
 
-class ThermiaException(Exception):
-    def __init__(self, code=None, *args, **kwargs):
-        self.message = ""
-        super().__init__(*args, **kwargs)
-        if code is not None:
-            self.code = code
-            if isinstance(code, str):
-                self.message = self.code
-                return
-
-class ThermiaConnectionError(ThermiaException):
-    pass
 
 def num_to_bin(value):
     if(value > -1): return value
@@ -41,11 +29,13 @@ def num_to_bin(value):
 class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
     """Main class to perform modbus requests to heat pump."""
 
-    def __init__(self, host, port=502, kind='inverter', delay=0.1, max_registers=16):
+    def __init__(self, host, protocol = "TCP", port=502, kind='inverter', delay=0.1, max_registers=16,
+                baudrate=19200, bytesize=8, parity="E", stopbits=1, handle_local_echo=False):
         """Initialize."""
 
         self.data = {}
-        self._client = ModbusClient(host, port=port, unit_id=1, auto_open=True)
+        self._client = ThermiaModbusClient(host, protocol = protocol, port=port, kind=kind, delay=delay, max_registers=max_registers,
+                baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits, handle_local_echo=handle_local_echo)
         self.firmware = None
         if(kind == MODEL_MEGA): self.model = "Mega"
         else: self.model = "Diplomat Inverter"
@@ -54,6 +44,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         self._kind = kind
         self._delay = delay
         self.MAX_REGISTERS = max_registers
+    
 
     async def async_set(self, register, value):  # pylint:disable=too-many-branches
         """Write data to heat pump."""
@@ -62,10 +53,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
 
     async def async_update(self, register_types=REG_TYPES, only_registers = None):  # pylint:disable=too-many-branches
         """Update data from heat pump."""
-        if not self._client.is_open():
-            _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s", self._host, self._port)
-            if not self._client.open():
-                raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
+        self._client.assure_connecion()
         use_registers = []
         if(only_registers != None):
             #Make sure to sort registers by type and address
@@ -117,10 +105,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         address = meta[KEY_ADDRESS]
         scale = meta[KEY_SCALE]
 
-        if not self._client.is_open():
-            _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s", self._host, self._port)
-            if not self._client.open():
-                raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
+        self._client.assure_connecion()
 
         await asyncio.sleep(self._delay)
         try:

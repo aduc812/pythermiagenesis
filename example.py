@@ -23,10 +23,10 @@ async def main():
     host = argv[1] if len(argv) > 1 else HOST
     port = argv[2] if len(argv) > 2 else PORT
     kind = argv[3] if len(argv) > 3 else "inverter"
-
+    prot = argv[4] if len(argv) > 4 else "TCP"
     # argument kind: inverter - for Diplomat Inverter
     #                mega     - for Mega
-    thermia = ThermiaGenesis(host, port=port, kind=kind, delay=0.15)
+    thermia = ThermiaGenesis(host, protocol = prot,  port=port, kind=kind, delay=0.15)
     try:
         #Get all register types
         #await thermia.async_update()
