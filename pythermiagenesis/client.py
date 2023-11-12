@@ -80,10 +80,9 @@ class ThermiaModbusRTUClient():
             )
 
     def assure_connecion(self):
-        if not self._client.is_open():
-            _LOGGER.info(f"Attempting to open a Modbus RTU serial port {self._port}")
-            if not self._client.open():
-                raise ThermiaConnectionError(f"Failed to open port {self._port}")
+        _LOGGER.info(f"Attempting to open a Modbus RTU serial port {self._port}")
+        if not self._client.open():
+            raise ThermiaConnectionError(f"Failed to open port {self._port}")
 
     async def write_single_coil(self, address, value):
 
