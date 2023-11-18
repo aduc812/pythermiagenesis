@@ -173,7 +173,7 @@ class ThermiaModbusRTUClient():
     def word_list_to_long(self, regs):
         output = []
         for i in range (int(len(regs)/2)):
-            val = uint(regs[i*2]) * 2^16 + uint(regs[i*2+1])
+            val = regs[i*2] * 2^16 + regs[i*2+1]
             output.append(val)
         return output
 
