@@ -171,10 +171,10 @@ class ThermiaModbusRTUClient():
         return self._last_error
 
     def word_list_to_long(self, regs):
-        import pymodbus.client as ModbusClientRTU
+        from pymodbus.client.mixin import ModbusClientMixin as mixin
         output = []
         for i in range (int(len(regs)/2)):
-            val = ModbusClientRTU.ModbusClientMixin.convert_from_registers(regs[i*2],ModbusClientRTU.ModbusClientMixin.DATATYPE.INT32)
+            val = mixin.convert_from_registers(regs[i*2],mixin.DATATYPE.INT32)
             output.append(val)
         return output
 
