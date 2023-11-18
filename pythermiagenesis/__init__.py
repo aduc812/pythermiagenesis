@@ -198,6 +198,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                         val = read_data[address]
                         if(datatype == TYPE_LONG):
                             regs = read_data[address:(address+2)]
+                            _LOGGER.debug(f"attempt to convert to long: 0x{regs:x}")
                             val = self._client.word_list_to_long(regs)[0]
                         elif(datatype == TYPE_INT):
                             if(val == 32767): val = 0
