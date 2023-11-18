@@ -90,7 +90,7 @@ class ThermiaModbusRTUClient():
     async def write_single_coil(self, address, value):
         from pymodbus.exceptions import ModbusException
         try:
-            rr = await client.read_coils(address, value, slave = self._host)
+            rr = await self._client.write_coil(address, value, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
             self._last_error = 1 #exc
