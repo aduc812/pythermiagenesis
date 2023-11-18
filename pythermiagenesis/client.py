@@ -34,7 +34,7 @@ class ThermiaModbusTCPLiteClient():
     """instance of pyModbusTCP.client"""
     def __init__ (self, host, port=502, unit_id=1, auto_open=True):
         from pyModbusTCP.client import ModbusClient as pyModbusTCPClient
-        self._host = int(host)
+        self._host = host
         self._port = port
         self._client = pyModbusTCPClient(host, port=port, unit_id=unit_id, auto_open=auto_open)
         self._last_error = None
@@ -63,7 +63,7 @@ class ThermiaModbusRTUClient():
         from  pymodbus.framer.rtu_framer import ModbusRtuFramer as rtuframer
         from pymodbus.exceptions import ModbusException
         self._port = port # serial port device, e.g. "/dev/serial0"
-        self._host = host # slave address in Modbus RTU calls
+        self._host = int(host) # slave address in Modbus RTU calls
         self._client = ModbusClientRTU.AsyncModbusSerialClient(
                 port, 
                 framer=rtuframer,
