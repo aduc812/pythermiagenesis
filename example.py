@@ -3,7 +3,7 @@ import logging
 from sys import argv
 
 from pythermiagenesis import ThermiaGenesis
-from pythermiagenesis.client import ThermiaConnectionError
+from pythermiagenesis import ThermiaConnectionError
 from pythermiagenesis.const import (
         REGISTERS, 
         REG_INPUT, 

@@ -16,8 +16,8 @@ import logging
 from .const import *
 from struct import unpack
 
-from  pythermiagenesis.client  import ThermiaModbusClient
-
+from pythermiagenesis.client  import ThermiaModbusClient
+from pythermiagenesis.client import ThermiaConnectionError
 
 _LOGGER = logging.getLogger(__name__)
 
