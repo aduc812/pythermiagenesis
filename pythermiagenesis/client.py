@@ -90,10 +90,10 @@ class ThermiaModbusRTUClient():
             rr = await client.read_coils(address, value, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1 #exc
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            raise ModbusException("ERROR: pymodbus returned an error!")
         return rr
 
     async def write_single_register(self, address, value):
@@ -102,10 +102,10 @@ class ThermiaModbusRTUClient():
             rr = await self._client.write_register(address, value,  slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1 #exc
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            raise ModbusException("ERROR: pymodbus returned an error!")
         return rr
 
     async def read_coils(self, start_address, length):
@@ -114,11 +114,11 @@ class ThermiaModbusRTUClient():
             rr = await self._client.read_coils(start_address, length, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1# exc
             return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = 1# ModbusException("ERROR: pymodbus returned an error!")
             return None
         return rr.bits
 
@@ -128,11 +128,11 @@ class ThermiaModbusRTUClient():
             rr =  await self._client.read_discrete_inputs(start_address, length, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1# exc
             return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = 1# ModbusException("ERROR: pymodbus returned an error!")
             return None
         return rr.bits
 
@@ -142,11 +142,11 @@ class ThermiaModbusRTUClient():
             rr =  await self._client.read_input_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1# exc
             return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = 1# ModbusException("ERROR: pymodbus returned an error!")
             return None
         return rr.registers
 
@@ -156,11 +156,11 @@ class ThermiaModbusRTUClient():
             rr =  await self._client.read_holding_registers(start_address, length, slave = self._host)
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
-            self._last_error = exc
+            self._last_error = 1# exc
             return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = 1# ModbusException("ERROR: pymodbus returned an error!")
             return None
         return rr.registers
 
