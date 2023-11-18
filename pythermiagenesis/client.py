@@ -39,11 +39,30 @@ class ThermiaModbusTCPLiteClient():
         self._client = pyModbusTCPClient(host, port=port, unit_id=unit_id, auto_open=auto_open)
         self._last_error = None
     
-    def assure_connecion(self):
+    async def assure_connecion(self):
         if not self._client.is_open():
             _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s",  self._host, self._port)
             if not self._client.open():
                 raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
+
+    async def write_single_coil(self, address, value):
+        return self._client.write_single_coil(address, value)
+
+    async def write_single_register(self, address, value):
+        return self._client.write_single_register( address, value)
+
+    async def read_coils(self, start_address, length):
+        return self._client.read_coils(start_address, length)
+
+    async def read_discrete_inputs(self, start_address, length):
+        return self._client.read_discrete_inputs(start_address, length)
+
+    async def read_input_registers(self, start_address, length):
+        return self._client.read_input_registers(start_address, length)
+
+    async def read_holding_registers(self, start_address, length):
+        return self._client.read_holding_registers(start_address, length)
+
     def word_list_to_long(self, regs):
         from pyModbusTCP.utils import word_list_to_long as pyModbusTCP_word_list_to_long
         return pyModbusTCP_word_list_to_long(regs)
