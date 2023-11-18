@@ -171,9 +171,10 @@ class ThermiaModbusRTUClient():
         return self._last_error
 
     def word_list_to_long(self, regs):
+        (regs, datatype)
         output = []
         for i in range (int(len(regs)/2)):
-            val=self._client.convert_from_registers(regs[i*2],self._client.DATATYPE.INT32)
+            val = ModbusClientRTU.ModbusClientMixin.convert_from_registers(regs[i*2],self._client.DATATYPE.INT32)
             output.append(val)
         return output
 
