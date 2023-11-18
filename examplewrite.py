@@ -15,7 +15,8 @@ async def main():
     host = argv[1] if len(argv) > 1 else HOST
     port = argv[2] if len(argv) > 2 else PORT
     kind = argv[3] if len(argv) > 3 else "inverter"
-
+    prot = argv[4] if len(argv) > 4 else "TCP"
+    
     # RTU arguments; leave default for TCP connection  
     baud = int(argv[5]) if len(argv) > 5 else 19200
     btsz = int(argv[6]) if len(argv) > 6 else 8
@@ -30,7 +31,7 @@ async def main():
 
     thermia = ThermiaGenesis(host, protocol = prot,  port=port, kind=kind, delay=0.15,
     baudrate=baud, bytesize=btsz, parity=prty, stopbits=stbt, handle_local_echo=echo)
-    
+
     try:
         await thermia.async_set(ATTR_COIL_ENABLE_TAP_WATER, False)
         #await thermia.async_set(ATTR_COIL_ENABLE_TAP_WATER, True)
