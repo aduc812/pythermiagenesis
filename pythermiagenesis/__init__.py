@@ -53,7 +53,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
 
     async def async_update(self, register_types=REG_TYPES, only_registers = None):  # pylint:disable=too-many-branches
         """Update data from heat pump."""
-        self._client.assure_connecion()
+        await self._client.assure_connecion()
         use_registers = []
         if(only_registers != None):
             #Make sure to sort registers by type and address
@@ -105,7 +105,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         address = meta[KEY_ADDRESS]
         scale = meta[KEY_SCALE]
 
-        self._client.assure_connecion()
+        await self._client.assure_connecion()
 
         await asyncio.sleep(self._delay)
         try:
