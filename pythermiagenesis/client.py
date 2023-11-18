@@ -115,9 +115,11 @@ class ThermiaModbusRTUClient():
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
             self._last_error = exc
+            return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            return None
         return rr.bits
 
     async def read_discrete_inputs(self, start_address, length):
@@ -127,9 +129,11 @@ class ThermiaModbusRTUClient():
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
             self._last_error = exc
+            return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            return None
         return rr.bits
 
     async def read_input_registers(self, start_address, length):
@@ -139,9 +143,11 @@ class ThermiaModbusRTUClient():
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
             self._last_error = exc
+            return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            return None
         return rr.registers
 
     async def read_holding_registers(self, start_address, length):
@@ -151,9 +157,11 @@ class ThermiaModbusRTUClient():
         except ModbusException as exc:
             _LOGGER.error(f"ERROR: exception in pymodbus {exc}")
             self._last_error = exc
+            return None
         if rr.isError():
             _LOGGER.error("ERROR: pymodbus returned an error!")
-        raise ModbusException("ERROR: pymodbus returned an error!")
+            self._last_error = ModbusException("ERROR: pymodbus returned an error!")
+            return None
         return rr.registers
 
     def last_error(self):
