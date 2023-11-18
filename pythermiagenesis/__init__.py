@@ -177,8 +177,8 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         try:
             for chunk in chunks:
                 await asyncio.sleep(self._delay)
-                start_address = int(chunk['start'])
-                length = int(chunk['end'] - chunk['start'] + 1)
+                start_address = chunk['start']
+                length = chunk['end'] - chunk['start'] + 1
                 regtype = chunk[KEY_REG_TYPE]
                 _LOGGER.debug(f"Reading {regtype} {start_address} length {length}")
                 read_data = None
