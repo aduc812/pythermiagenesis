@@ -83,6 +83,7 @@ class ThermiaModbusRTUClient():
         if not (self._client.connected) :
             _LOGGER.info(f"Attempting to open a Modbus RTU serial port {self._port}")
             if not await self._client.connect():
+                _LOGGER.info(f"_client.connect returned False; _client.connected returns {_client.connected}")
                 raise ThermiaConnectionError(f"Failed to open port {self._port}")
         else: _LOGGER.info(f"Already connected to Modbus RTU serial port {self._port}")
 
