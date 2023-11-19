@@ -17,7 +17,7 @@ setup(
     # install_requires=["pymodbustcp==0.1.10"],
     extras_require={
         'TCP':[ "pymodbustcp==0.1.10" ],
-        'RTU':[ "pymodbus>=3.0.0" ]
+        'RTU':[ "pymodbus>=3.0.0","pyserial" ]
     },
     classifiers=[
         "License :: OSI Approved :: MIT License",
