@@ -63,6 +63,9 @@ class ThermiaModbusTCPLiteClient():
     async def read_holding_registers(self, start_address, length):
         return self._client.read_holding_registers(start_address, length)
 
+    def close(self):
+        return self._client.close()
+
     def word_list_to_long(self, regs):
         from pyModbusTCP.utils import word_list_to_long as pyModbusTCP_word_list_to_long
         return pyModbusTCP_word_list_to_long(regs)
@@ -185,6 +188,9 @@ class ThermiaModbusRTUClient():
             self._last_error = 1# ModbusException("ERROR: pymodbus returned an error!")
             return None
         return rr.registers
+
+    def close(self):
+        return self._client.close()
 
     def last_error(self):
         return self._last_error
