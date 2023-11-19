@@ -13,26 +13,14 @@ from datetime import timedelta
 from operator import itemgetter, attrgetter
 import logging
 
-from pyModbusTCP.client import ModbusClient
-from pyModbusTCP.utils import *
-
 from .const import *
 from struct import unpack
 
+from pythermiagenesis.client  import ThermiaModbusClient
+from pythermiagenesis.client import ThermiaConnectionError
+
 _LOGGER = logging.getLogger(__name__)
 
-class ThermiaException(Exception):
-    def __init__(self, code=None, *args, **kwargs):
-        self.message = ""
-        super().__init__(*args, **kwargs)
-        if code is not None:
-            self.code = code
-            if isinstance(code, str):
-                self.message = self.code
-                return
-
-class ThermiaConnectionError(ThermiaException):
-    pass
 
 def num_to_bin(value):
     if(value > -1): return value
@@ -41,11 +29,13 @@ def num_to_bin(value):
 class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
     """Main class to perform modbus requests to heat pump."""
 
-    def __init__(self, host, port=502, kind='inverter', delay=0.1, max_registers=16):
+    def __init__(self, host, protocol = "TCP", port=502, kind='inverter', delay=0.1, max_registers=16,
+                baudrate=19200, bytesize=8, parity="E", stopbits=1, handle_local_echo=False):
         """Initialize."""
 
         self.data = {}
-        self._client = ModbusClient(host, port=port, unit_id=1, auto_open=True)
+        self._client = ThermiaModbusClient(host, protocol = protocol, port=port,
+                baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits, handle_local_echo=handle_local_echo)
         self.firmware = None
         if(kind == MODEL_MEGA): self.model = "Mega"
         else: self.model = "Diplomat Inverter"
@@ -54,18 +44,16 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         self._kind = kind
         self._delay = delay
         self.MAX_REGISTERS = max_registers
+    
 
     async def async_set(self, register, value):  # pylint:disable=too-many-branches
         """Write data to heat pump."""
         ret_value = await self._set_data(register, value)
-        self._client.close()
+        await self._client.close()
 
     async def async_update(self, register_types=REG_TYPES, only_registers = None):  # pylint:disable=too-many-branches
         """Update data from heat pump."""
-        if not self._client.is_open():
-            _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s", self._host, self._port)
-            if not self._client.open():
-                raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
+        await self._client.assure_connecion()
         use_registers = []
         if(only_registers != None):
             #Make sure to sort registers by type and address
@@ -74,7 +62,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
             use_registers = dict(filter(lambda x: x[1][self._kind], REGISTERS.items())).keys()
 
         raw_data = await self._get_data(use_registers)
-        self._client.close()
+        await  self._client.close()
 
         if not raw_data:
             self.data = {}
@@ -117,22 +105,19 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         address = meta[KEY_ADDRESS]
         scale = meta[KEY_SCALE]
 
-        if not self._client.is_open():
-            _LOGGER.info("Attempting to open a Modbus TCP connection to %s:%s", self._host, self._port)
-            if not self._client.open():
-                raise ThermiaConnectionError(f"Failed to connect to {self._host}:{self._port}")
+        await self._client.assure_connecion()
 
         await asyncio.sleep(self._delay)
         try:
             if(regtype == REG_COIL):
                 _LOGGER.debug(f"Set {regtype} register at {address} value {value} ({value})")
-                self._client.write_single_coil(address, value)
+                await self._client.write_single_coil(address, value)
             elif(regtype == REG_HOLDING):
                 converted_value = int(value * scale)
                 if(meta[KEY_DATATYPE] == TYPE_INT):
                     converted_value = num_to_bin(converted_value)
                 _LOGGER.debug(f"Set {regtype} register at {address} value {converted_value} ({value}) {scale}")
-                self._client.write_single_register(address, converted_value)
+                await self._client.write_single_register(address, converted_value)
             else: 
                 raise "This register can not be changed"
         except Exception as e:
@@ -198,13 +183,13 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                 _LOGGER.debug(f"Reading {regtype} {start_address} length {length}")
                 read_data = None
                 if(regtype == REG_COIL):
-                    read_data = self._client.read_coils(start_address, length)
+                    read_data = await self._client.read_coils(start_address, length)
                 elif(regtype == REG_DISCRETE_INPUT):
-                    read_data = self._client.read_discrete_inputs(start_address, length)
+                    read_data = await self._client.read_discrete_inputs(start_address, length)
                 elif(regtype == REG_INPUT):
-                    read_data = self._client.read_input_registers(start_address, length)
+                    read_data = await self._client.read_input_registers(start_address, length)
                 elif(regtype == REG_HOLDING):
-                    read_data = self._client.read_holding_registers(start_address, length)
+                    read_data = await self._client.read_holding_registers(start_address, length)
                 if read_data:
                     for i, (name, address) in enumerate(chunk['slots'].items()):
                         info = REGISTERS[name]
@@ -213,7 +198,8 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                         val = read_data[address]
                         if(datatype == TYPE_LONG):
                             regs = read_data[address:(address+2)]
-                            val = word_list_to_long(regs)[0]
+                            _LOGGER.debug(f"attempt to convert to long: {hex(regs[0])} {hex(regs[1])}")
+                            val = self._client.word_list_to_long(regs)[0]
                         elif(datatype == TYPE_INT):
                             if(val == 32767): val = 0
                             if(val > 32767): val = val - 65536
