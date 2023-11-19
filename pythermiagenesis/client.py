@@ -65,7 +65,7 @@ class ThermiaModbusTCPLiteClient():
 
     async def close(self):
         return self._client.close()
-        
+
     def word_list_to_long(self, regs):
         from pyModbusTCP.utils import word_list_to_long as pyModbusTCP_word_list_to_long
         return pyModbusTCP_word_list_to_long(regs)
@@ -190,7 +190,7 @@ class ThermiaModbusRTUClient():
         return rr.registers
 
     async def close(self):
-        return self._client.close()
+        return await self._client.close()
 
     def last_error(self):
         return self._last_error
