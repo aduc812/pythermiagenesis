@@ -63,7 +63,7 @@ class ThermiaModbusTCPLiteClient():
     async def read_holding_registers(self, start_address, length):
         return self._client.read_holding_registers(start_address, length)
 
-    async def close(self):
+    def close(self):
         return self._client.close()
 
     def word_list_to_long(self, regs):
@@ -189,8 +189,8 @@ class ThermiaModbusRTUClient():
             return None
         return rr.registers
 
-    async def close(self):
-        return await self._client.close()
+    def close(self):
+        return self._client.close()
 
     def last_error(self):
         return self._last_error
