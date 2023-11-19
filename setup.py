@@ -8,7 +8,7 @@ setup(
     author="Johan Isaksson, extended by Sergey Omelkov",
     author_email="johan@generatorhallen.se, omelkovs@gmail.com",
     description="Python wrapper for getting data from Thermia Mega and Inverter heat pumps \
-        via Modbus TCP.",
+        via Modbus TCP or Modbus RTU.",
     include_package_data=True,
     url="https://github.com/aduc812/pythermiagenesis",
     license="MIT",
