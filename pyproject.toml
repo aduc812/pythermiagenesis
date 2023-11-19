@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pythermiagenesis"
+version = "0.1.8"
+description = "Python wrapper for getting data from Thermia Mega and Inverter heat pumps via Modbus TCP or Modbus RTU."
+authors = [{name = "Johan Isaksson"}, {name = "Sergey Omelkov"}]
+maintainers = [{name = "aduc812"}, {name = "CJNE"}]
+license = {text = "MIT"}
+requires-python = ">=3.6.0"
+
+[project.urls]
+Homepage = "https://github.com/aduc812/pythermiagenesis"
+
+[project.optional-dependencies]
+TCP = ["pymodbustcp==0.1.10"]
+RTU = ["pymodbus>=3.0.0", "pyserial"]
